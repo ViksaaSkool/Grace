@@ -12,7 +12,6 @@ public class Constants {
     public static final String APP_TAG = "APPTAG";
     public static final String CAMERA_TAG = "CAMERATAG";
     public static final String BLESS_TAG = "BLESSTAG";
-    
 
     //API
     public static final String IS_THIS_MEAL = "rest_service/is_this_meal/";
