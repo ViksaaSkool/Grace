@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/rounded_button_white">
+
+    <RelativeLayout
+        android:id="@+id/top_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true">
+
+        <TextView
+            android:id="@+id/title_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_margin="@dimen/dialog_title_padding"
+            android:padding="@dimen/dialog_title_padding"
+            android:text="@string/disclaimer_title"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/dialog_title_size" />
+
+        <com.balysv.materialripple.MaterialRippleLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            app:mrl_rippleAlpha="0.1"
+            app:mrl_rippleColor="@color/colorAccent"
+            app:mrl_rippleDelayClick="false"
+            app:mrl_rippleHover="true"
+            app:mrl_rippleOverlay="true">
+
+            <TextView
+                android:id="@+id/exit_app_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/dialog_title_padding"
+                android:padding="@dimen/dialog_title_padding"
+
+                android:text="@string/exit_app_text"
+                android:textColor="@color/colorAccent"
+                android:textSize="@dimen/dialog_text_size" />
+        </com.balysv.materialripple.MaterialRippleLayout>
+
+    </RelativeLayout>
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/bottom_layout"
+        android:layout_below="@+id/top_layout">
+
+        <android.support.v4.view.ViewPager
+            android:id="@+id/content_view_pager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <android.support.design.widget.TabLayout
+            android:id="@+id/dots_tab_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:background="@color/transparent_black"
+            app:tabBackground="@drawable/tab_selector"
+            app:tabGravity="center"
+            app:tabIndicatorHeight="0dp" />
+
+    </RelativeLayout>
+
+
+    <RelativeLayout
+        android:id="@+id/bottom_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true">
+
+        <android.support.v7.widget.AppCompatCheckBox
+            android:id="@+id/terms_and_conditions_check_box"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_margin="@dimen/dialog_title_padding"
+            android:layout_toStartOf="@+id/action_layout"
+            android:padding="@dimen/dialog_title_padding"
+            android:text="@string/i_agree_text"
+            android:textSize="@dimen/dialog_text_size"
+            android:visibility="invisible"
+            app:buttonTint="@color/colorAccent" />
+
+        <com.balysv.materialripple.MaterialRippleLayout
+            android:id="@+id/action_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            app:mrl_rippleAlpha="0.1"
+            app:mrl_rippleColor="@color/colorAccent"
+            app:mrl_rippleDelayClick="false"
+            app:mrl_rippleHover="true"
+            app:mrl_rippleOverlay="true">
+
+            <TextView
+                android:id="@+id/action_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:drawableEnd="@drawable/ic_next_wrapper"
+                android:gravity="center"
+                android:padding="@dimen/dialog_title_padding"
+                android:text="@string/next_step_text"
+                android:textColor="@drawable/tnc_dialog_selector"
+                android:textSize="@dimen/dialog_text_size" />
+        </com.balysv.materialripple.MaterialRippleLayout>
+
+    </RelativeLayout>
+
+
+</RelativeLayout>

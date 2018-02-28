@@ -1,0 +1,26 @@
+<resources>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+
+    <dimen name="loading_fragment_margin">32dp</dimen>
+    <dimen name="bottom_buttons_margin">18dp</dimen>
+    <dimen name="card_margin">24dp</dimen>
+    <dimen name="card_elevation">8dp</dimen>
+    <dimen name="card_radius">2dp</dimen>
+    <dimen name="bottom_between_buttons_margin">8dp</dimen>
+    <dimen name="text_buttons_padding">4dp</dimen>
+
+    <dimen name="button_radius">30sp</dimen>
+
+    <dimen name="loading_title_text_size">24sp</dimen>
+    <dimen name="button_text_size">14sp</dimen>
+    <dimen name="result_sub_title_text_size">18sp</dimen>
+    <dimen name="dialog_title_padding">8dp</dimen>
+    <dimen name="dialog_title_size">20sp</dimen>
+    <dimen name="dialog_text_size">16sp</dimen>
+
+    <dimen name="dots_size_l">10dp</dimen>
+    <dimen name="dots_spacing">10dp</dimen>
+    <dimen name="close_padding">12dp</dimen>
+
+    <item name="alpha_photo_overlay" format="float" type="dimen">0.7</item>
+</resources>

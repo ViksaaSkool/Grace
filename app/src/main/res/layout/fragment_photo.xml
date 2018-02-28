@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:weightSum="1">
+
+    <RelativeLayout
+        android:id="@+id/meal_background_relative_layout"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.6"
+        android:background="@android:color/black">
+
+        <ImageView
+            android:id="@+id/meal_image_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <RelativeLayout
+            android:id="@+id/overlay_relative_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:alpha="@dimen/alpha_photo_overlay"
+            android:background="@drawable/black_gradient"
+            android:visibility="gone" />
+
+        <RelativeLayout
+            android:id="@+id/error_relative_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="@dimen/loading_fragment_margin"
+            android:visibility="gone">
+
+            <ImageView
+                android:id="@+id/error_image_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:srcCompat="@drawable/error_god" />
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:srcCompat="@drawable/error_god_top" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/tap_full_relative_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:alpha="0.3"
+            android:background="@color/colorAccent"
+            android:padding="@dimen/dialog_title_padding"
+            android:visibility="gone">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:gravity="center_horizontal"
+                android:text="@string/tap_for_full_text"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/result_sub_title_text_size" />
+        </RelativeLayout>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.4"
+        android:background="@android:color/black">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/buttons_relative_layout"
+            android:layout_margin="@dimen/bottom_buttons_margin"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/title_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:text="@string/his_grace_approves_text"
+                android:textAllCaps="true"
+                android:textColor="@color/colorAccent"
+                android:textSize="@dimen/loading_title_text_size" />
+
+            <com.lb.auto_fit_textview.AutoResizeTextView
+                android:id="@+id/subtitle_text_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:text="@string/your_meal_is_blessed_text"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/result_sub_title_text_size" />
+
+        </LinearLayout>
+
+        <RelativeLayout
+            android:id="@+id/buttons_relative_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_margin="@dimen/bottom_buttons_margin">
+
+            <com.balysv.materialripple.MaterialRippleLayout
+                android:id="@+id/left_button_ripple"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/bottom_between_buttons_margin"
+                android:layout_toStartOf="@+id/center_relative_layout"
+                android:background="@drawable/rounded_button_white"
+                app:mrl_rippleAlpha="0.1"
+                app:mrl_rippleColor="@android:color/black"
+                app:mrl_rippleDelayClick="false"
+                app:mrl_rippleHover="true"
+                app:mrl_rippleOverlay="true">
+
+                <Button
+                    android:id="@+id/left_button"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/rounded_button_white"
+                    android:padding="@dimen/text_buttons_padding"
+                    android:text="@string/done_text"
+                    android:textAllCaps="true"
+                    android:textColor="@color/colorAccent"
+                    android:textSize="@dimen/button_text_size" />
+
+            </com.balysv.materialripple.MaterialRippleLayout>
+
+            <RelativeLayout
+                android:id="@+id/center_relative_layout"
+                android:layout_width="8dp"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true" />
+
+
+            <com.balysv.materialripple.MaterialRippleLayout
+                android:id="@+id/right_button_ripple"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/bottom_between_buttons_margin"
+                android:layout_toEndOf="@+id/center_relative_layout"
+                android:background="@drawable/rounded_button_pink"
+                app:mrl_rippleAlpha="0.1"
+                app:mrl_rippleColor="@android:color/black"
+                app:mrl_rippleDelayClick="false"
+                app:mrl_rippleHover="true"
+                app:mrl_rippleOverlay="true">
+
+                <Button
+                    android:id="@+id/right_button"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_toEndOf="@+id/center_relative_layout"
+                    android:background="@drawable/rounded_button_pink"
+                    android:padding="@dimen/text_buttons_padding"
+                    android:text="@string/share_text"
+                    android:textAllCaps="true"
+                    android:textColor="@android:color/white"
+                    android:textSize="@dimen/button_text_size" />
+            </com.balysv.materialripple.MaterialRippleLayout>
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+
+</LinearLayout>

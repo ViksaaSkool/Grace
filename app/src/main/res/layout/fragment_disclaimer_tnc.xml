@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white">
+
+    <WebView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/disclaimer_tnc_web_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:visibility="invisible" />
+
+    <com.udevel.widgetlab.TypingIndicatorView
+        android:id="@+id/loading_typing_indicator_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+
+        app:animationOrder="sequence"
+        app:backgroundColor="@android:color/white"
+        app:backgroundType="rounded"
+        app:dotAnimationDuration="@integer/dots_animation_duration"
+        app:dotAnimationType="Grow"
+        app:dotColor="@color/colorAccent"
+        app:dotCount="3"
+        app:dotHorizontalSpacing="@dimen/dots_spacing"
+        app:dotSize="@dimen/dots_size_l"
+        app:showBackground="true" />
+
+</RelativeLayout>

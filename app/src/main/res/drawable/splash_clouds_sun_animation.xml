@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<animation-list
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:drawable="@drawable/clouds_0"
+        android:duration="@integer/frame_duration_could_sun_animation_0" />
+    <item
+        android:drawable="@drawable/clouds_1"
+        android:duration="@integer/frame_duration_could_sun_animation" />
+
+    <item
+        android:drawable="@drawable/clouds_2"
+        android:duration="@integer/frame_duration_could_sun_animation" />
+    <item
+        android:drawable="@drawable/clouds_3"
+        android:duration="@integer/frame_duration_could_sun_animation" />
+
+    <item
+        android:drawable="@drawable/clouds_4"
+        android:duration="@integer/frame_duration_could_sun_animation" />
+    <item
+        android:drawable="@drawable/clouds_5"
+        android:duration="@integer/frame_duration_could_sun_animation" />
+    <item
+        android:drawable="@drawable/clouds_6"
+        android:duration="@integer/frame_duration_could_sun_animation" />
+    <item
+        android:drawable="@drawable/clouds_7"
+        android:duration="@integer/frame_duration_could_sun_animation" />
+    <item
+        android:drawable="@drawable/clouds_8"
+        android:duration="@integer/frame_duration_could_sun_animation" />
+
+
+</animation-list>

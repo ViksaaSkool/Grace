@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <integer name="frame_duration_could_sun_animation">100</integer>
+    <integer name="frame_duration_could_sun_animation_0">300</integer>
+
+    <integer name="dots_animation_duration">300</integer>
+</resources>

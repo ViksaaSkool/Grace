@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorPrimary"
+    android:orientation="vertical"
+    android:weightSum="1">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_margin="@dimen/loading_fragment_margin"
+        android:layout_weight="0.75">
+
+        <ImageView
+            android:id="@+id/grace_loading_image_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            app:srcCompat="@drawable/loading_god" />
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            app:srcCompat="@drawable/loading_god_no_circles" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.25">
+
+        <TextView
+            android:id="@+id/loading_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:gravity="center"
+            android:text="@string/let_me_see_text"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/loading_title_text_size" />
+
+        <com.udevel.widgetlab.TypingIndicatorView
+            android:id="@+id/loading_typing_indicator_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/loading_text_view"
+            android:layout_centerInParent="true"
+            android:layout_marginTop="16dp"
+            app:animationOrder="sequence"
+            app:backgroundColor="@color/colorPrimary"
+            app:backgroundType="rounded"
+            app:dotAnimationDuration="@integer/dots_animation_duration"
+            app:dotAnimationType="Grow"
+            app:dotColor="@color/colorAccent"
+            app:dotCount="3"
+            app:dotHorizontalSpacing="@dimen/dots_spacing"
+            app:dotSize="@dimen/dots_size_l"
+            app:showBackground="true" />
+
+    </RelativeLayout>
+</LinearLayout>

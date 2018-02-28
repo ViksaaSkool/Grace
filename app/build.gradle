@@ -1,0 +1,112 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 25
+    buildToolsVersion "25.0.3"
+    defaultConfig {
+        applicationId "com.grace.app"
+        minSdkVersion 19
+        targetSdkVersion 25
+        versionCode 1
+        versionName "1.0.4"
+        vectorDrawables.useSupportLibrary = true
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        jackOptions {
+            enabled false
+        }
+    }
+    buildTypes {
+
+        debug {
+            debuggable true
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            versionNameSuffix "_debug_" + getTimeStamp()
+
+            buildConfigField "String", "BASE_URL", getLocalProperty('baseUrlDev')
+            buildConfigField "String", "USERNAME", getLocalProperty('usernameDev')
+            buildConfigField "String", "PASSWORD", getLocalProperty('passwordDev')
+        }
+
+        release {
+            debuggable false
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+
+            buildConfigField "String", "BASE_URL", getLocalProperty('baseUrlProd')
+            buildConfigField "String", "USERNAME", getLocalProperty('usernameProd')
+            buildConfigField "String", "PASSWORD", getLocalProperty('passwordProd')
+        }
+    }
+}
+
+def getLocalProperty(propertyName) {
+    Properties properties = new Properties()
+    properties.load(project.rootProject.file('local.properties').newDataInputStream())
+    return properties.getProperty(propertyName, null)
+}
+
+
+def getTimeStamp() {
+    def date = new Date()
+    def formattedDate = date.format('dd.MM.yyyy')
+    return formattedDate
+}
+
+repositories {
+    mavenCentral()
+    maven {
+        url "https://jitpack.io"
+    }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+    testCompile 'junit:junit:4.12'
+
+    /* Dagger 2.0 */
+    annotationProcessor 'com.google.dagger:dagger-compiler:2.5'
+    compile 'com.google.dagger:dagger:2.5'
+
+    /* Support */
+    compile 'com.android.support:appcompat-v7:25.3.1'
+    compile 'com.android.support:design:25.3.1'
+    compile 'com.android.support:cardview-v7:25.3.1'
+    compile 'com.android.support.constraint:constraint-layout:1.0.0-beta1'
+
+    /* Retrofit 2.0 */
+    compile 'com.google.code.gson:gson:2.7'
+    compile 'com.squareup.retrofit2:retrofit:2.3.0'
+    compile 'com.squareup.retrofit2:converter-gson:2.3.0'
+    compile 'com.squareup.okhttp3:logging-interceptor:3.8.0'
+    compile 'com.squareup.okhttp3:okhttp:3.8.0'
+
+    /* ButterKnife */
+    compile 'com.jakewharton:butterknife:8.5.1'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:8.5.1'
+
+    /* Glide */
+    compile 'com.github.bumptech.glide:glide:3.7.0'
+
+    /* Material Ripple */
+    compile 'com.balysv:material-ripple:1.0.2'
+
+    /* EventBus */
+    compile 'org.greenrobot:eventbus:3.0.0'
+
+    /* PhotoView */
+    compile 'com.github.chrisbanes:PhotoView:1.3.1'
+
+    /* Widget dots */
+    compile 'com.github.uDevel:widgetlab:0.9.1'
+
+    /* Calligraphy */
+    compile 'uk.co.chrisjenx:calligraphy:2.3.0'
+
+    /* AutofitTextView */
+    compile 'com.github.AndroidDeveloperLB:AutoFitTextView:4'
+
+}

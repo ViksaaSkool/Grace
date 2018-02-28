@@ -1,0 +1,40 @@
+<resources>
+    <string name="app_name">Grace</string>
+
+    <string name="capture_meal_text">Capture Meal</string>
+    <string name="from_file_meal_text">Meal From Gallery</string>
+    <string name="not_a_meal_text">Hey! That\'s not a photo of a meal!</string>
+
+    <string name="do_you_want_to_text">Would you like to bless this meal?</string>
+    <string name="let_me_see_text">Let me see that photo\nfor a moment</string>
+    <string name="blessing_photo_text">Please wait, blessing meal</string>
+    <string name="loading_text">Please wait, loading</string>
+    <string name="yes_text">Yes</string>
+    <string name="no_text">No</string>
+    <string name="share_text">Share</string>
+    <string name="done_text">Done</string>
+    <string name="your_meal_is_blessed_text">You can eat now!</string>
+    <string name="share_meal_text">Share blessed meal via&#8230;</string>
+    <string name="his_grace_approves_text">His Grace Approves</string>
+    <string name="his_grace_angered_text">His Grace is Angered</string>
+    <string name="his_grace_asks_text">His Grace Asks</string>
+    <string name="feel_wraith_text">Feel the wraith</string>
+    <string name="another_try_text">Give it another try</string>
+    <string name="no_photo_was_selected">No photo was selected!</string>
+    <string name="no_photo_was_taken">No photo was taken!</string>
+    <string name="permission_not_granted_text">Permission not granted!</string>
+    <string name="no_internets">You\'ve lost connection to the Internets!</string>
+
+    <string name="disclaimer_title">Disclaimer</string>
+    <string name="terms_and_conditions_title">Privacy Policy</string>
+    <string name="next_step_text">Next</string>
+    <string name="exit_app_text">Exit</string>
+    <string name="enter_app_text">OK</string>
+    <string name="i_agree_text">I\'ve read the Disclaimer \nand Privacy Policy \nand I Agree</string>
+    <string name="interrupted_text">You\'ve interrupted his Grace!</string>
+    <string name="something_went_wrong_text">Hmm&#8230; Something went wrong</string>
+    <string name="transition_name">photo</string>
+    <string name="tap_for_full_text">Tap for full photo</string>
+
+
+</resources>
