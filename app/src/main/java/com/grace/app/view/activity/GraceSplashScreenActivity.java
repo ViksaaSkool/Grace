@@ -7,14 +7,17 @@ import android.graphics.drawable.AnimationDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.app.AppCompatDelegate;
 import android.view.View;
 import android.widget.ImageView;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
+
 import com.grace.app.R;
 import com.grace.app.constants.Constants;
+import com.grace.app.databinding.ActivitySplashScreen1Binding;
+import com.grace.app.databinding.ActivitySplashScreenBinding;
 import com.grace.app.injection.componenet.AppComponent;
 import com.grace.app.injection.componenet.view.DaggerGraceSplashScreenViewComponent;
 import com.grace.app.injection.module.view.GraceSplashScreenViewModule;
@@ -27,29 +30,32 @@ import com.grace.app.view.impl.BaseActivity;
 
 import javax.inject.Inject;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-
 public final class GraceSplashScreenActivity extends BaseActivity<GraceSplashScreenPresenter,
         GraceSplashScreenView> implements GraceSplashScreenView {
 
     @Inject
     PresenterFactory<GraceSplashScreenPresenter> mPresenterFactory;
 
-    @BindView(R.id.background_image_view)
-    ImageView mBackgroundImageView;
-    @BindView(R.id.logo_image_view)
-    ImageView mLogoImageView;
+    private ActivitySplashScreenBinding mBinding;
+    private ActivitySplashScreen1Binding mLegacyBinding;
+    private ImageView mBackgroundImageView;
+    private ImageView mLogoImageView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
         super.onCreate(savedInstanceState);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
-            setContentView(R.layout.activity_splash_screen);
-        else
-            setContentView(R.layout.activity_splash_screen_1);
-        ButterKnife.bind(this);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            mBinding = ActivitySplashScreenBinding.inflate(getLayoutInflater());
+            setContentView(mBinding.getRoot());
+            mBackgroundImageView = mBinding.backgroundImageView;
+            mLogoImageView = mBinding.logoImageView;
+        } else {
+            mLegacyBinding = ActivitySplashScreen1Binding.inflate(getLayoutInflater());
+            setContentView(mLegacyBinding.getRoot());
+            mBackgroundImageView = mLegacyBinding.backgroundImageView;
+            mLogoImageView = mLegacyBinding.logoImageView;
+        }
     }
 
     @Override

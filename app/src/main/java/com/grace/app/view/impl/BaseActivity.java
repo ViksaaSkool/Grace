@@ -7,11 +7,12 @@ import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.Loader;
-import android.support.v7.app.AppCompatActivity;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.loader.app.LoaderManager;
+import androidx.loader.content.Loader;
 
 import com.grace.app.GraceApplication;
 import com.grace.app.injection.componenet.AppComponent;
@@ -22,7 +23,6 @@ import com.grace.app.presenter.loader.PresenterLoader;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 public abstract class BaseActivity<P extends BasePresenter<V>, V> extends AppCompatActivity implements LoaderManager.LoaderCallbacks<P> {
     /**
@@ -62,7 +62,7 @@ public abstract class BaseActivity<P extends BasePresenter<V>, V> extends AppCom
 
         injectDependencies();
 
-        getSupportLoaderManager().initLoader(mUniqueLoaderIdentifier, null, this).startLoading();
+        LoaderManager.getInstance(this).initLoader(mUniqueLoaderIdentifier, null, this).startLoading();
     }
 
     private void injectDependencies() {
@@ -72,7 +72,7 @@ public abstract class BaseActivity<P extends BasePresenter<V>, V> extends AppCom
 
     @Override
     protected void attachBaseContext(Context newBase) {
-        super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
+        super.attachBaseContext(newBase);
     }
 
     @Override

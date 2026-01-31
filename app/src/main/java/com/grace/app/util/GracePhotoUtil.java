@@ -1,7 +1,8 @@
 package com.grace.app.util;
 
+import static android.media.ExifInterface.TAG_ORIENTATION;
+
 import android.annotation.SuppressLint;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -9,19 +10,20 @@ import android.graphics.Matrix;
 import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Environment;
-import android.provider.MediaStore;
 import android.util.Base64;
+import android.webkit.MimeTypeMap;
 
 import com.grace.app.GraceApplication;
 import com.grace.app.constants.Constants;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
-import static android.media.ExifInterface.TAG_ORIENTATION;
 
 /**
  * Created by varsovski on 18-Dec-16.
@@ -35,8 +37,14 @@ public class GracePhotoUtil {
      * @return File
      */
     public static File getOutputMediaFile(String photoName) {
-        File mediaStorageDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
-                Constants.APP_FOLDER);
+        File baseDir = GraceApplication
+                .getAppComponent()
+                .getApp()
+                .getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        if (baseDir == null) {
+            baseDir = GraceApplication.getAppComponent().getApp().getCacheDir();
+        }
+        File mediaStorageDir = new File(baseDir, Constants.APP_FOLDER);
         if (!mediaStorageDir.exists()) {
             if (!mediaStorageDir.mkdirs()) {
                 LogUtil.d(Constants.CAMERA_TAG, "getOutputMediaFile() | failed to create directory");
@@ -65,27 +73,49 @@ public class GracePhotoUtil {
      * @return string uri to selected photo
      */
     public static String getSelectedPhotoPath(Uri selectedPhoto) {
+        if (selectedPhoto == null) {
+            return "";
+        }
 
-        String[] filePathColumn = {MediaStore.Images.Media.DATA};
-        String imgDecodableString = "";
-
-        // Get the cursor
-        Cursor cursor = GraceApplication
+        String extension = "jpg";
+        String mimeType = GraceApplication
                 .getAppComponent()
                 .getApp()
                 .getContentResolver()
-                .query(selectedPhoto,
-                        filePathColumn, null, null, null);
-        // Move to first row
-        if (cursor != null) {
-            cursor.moveToFirst();
-
-            int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-            imgDecodableString = cursor.getString(columnIndex);
-            cursor.close();
+                .getType(selectedPhoto);
+        if (mimeType != null) {
+            String resolvedExt = MimeTypeMap.getSingleton().getExtensionFromMimeType(mimeType);
+            if (resolvedExt != null && !resolvedExt.isEmpty()) {
+                extension = resolvedExt;
+            }
         }
 
-        return imgDecodableString;
+        File baseDir = GraceApplication
+                .getAppComponent()
+                .getApp()
+                .getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        if (baseDir == null) {
+            baseDir = GraceApplication.getAppComponent().getApp().getCacheDir();
+        }
+
+        File outputFile = new File(baseDir, "picked_" + System.currentTimeMillis() + "." + extension);
+
+        try (InputStream inputStream = GraceApplication.getAppComponent().getApp().getContentResolver().openInputStream(selectedPhoto);
+             OutputStream outputStream = new FileOutputStream(outputFile)) {
+            if (inputStream == null) {
+                return "";
+            }
+            byte[] buffer = new byte[8 * 1024];
+            int bytesRead;
+            while ((bytesRead = inputStream.read(buffer)) != -1) {
+                outputStream.write(buffer, 0, bytesRead);
+            }
+            outputStream.flush();
+            return outputFile.getAbsolutePath();
+        } catch (IOException e) {
+            LogUtil.d(Constants.CAMERA_TAG, "getSelectedPhotoPath() | exception = " + e.getMessage());
+            return "";
+        }
     }
 
     /**
@@ -100,8 +130,8 @@ public class GracePhotoUtil {
 
         Canvas canvas = new Canvas(mealPhoto);
         canvas.drawBitmap(mealPhoto, new Matrix(), null);
-        canvas.drawBitmap(watermark, watermark.getWidth() / marginFactor,
-                mealPhoto.getHeight() - (watermark.getHeight() + watermark.getHeight() / marginFactor), null);
+        canvas.drawBitmap(watermark, (float) watermark.getWidth() / marginFactor,
+                mealPhoto.getHeight() - (watermark.getHeight() + (float) watermark.getHeight() / marginFactor), null);
         return mealPhoto;
     }
 
@@ -117,10 +147,9 @@ public class GracePhotoUtil {
         ExifInterface exif = null;
         try {
             exif = new ExifInterface(photoPath);
-            orientation = Integer.valueOf(exif.getAttribute(TAG_ORIENTATION));
+            orientation = Integer.parseInt(exif.getAttribute(TAG_ORIENTATION));
             LogUtil.d(Constants.BLESS_TAG, "getOrientation() | orientation is: " + printOrientation(orientation));
         } catch (IOException e) {
-            e.printStackTrace();
             LogUtil.d(Constants.BLESS_TAG, "getOrientation() | exception = " + e.getMessage());
         }
         return orientation;

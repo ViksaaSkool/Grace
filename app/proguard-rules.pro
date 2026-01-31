@@ -67,20 +67,6 @@
 -keep public class * extends java.lang.Exception
 -printmapping mapping.txt
 
-# ButterKnife 8
--keep class butterknife.** { *; }
--dontwarn butterknife.internal.**
--keep class **$$ViewBinder { *; }
-
--keepclasseswithmembernames class * {
-    @butterknife.* <fields>;
-}
-
--keepclasseswithmembernames class * {
-    @butterknife.* <methods>;
-}
-
-
 #EventBus
 -keepattributes *Annotation*
 -keepclassmembers class ** {

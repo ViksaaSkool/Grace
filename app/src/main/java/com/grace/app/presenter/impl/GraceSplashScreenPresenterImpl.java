@@ -1,10 +1,10 @@
 package com.grace.app.presenter.impl;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
+import com.grace.app.interactor.GraceSplashScreenInteractor;
 import com.grace.app.presenter.GraceSplashScreenPresenter;
 import com.grace.app.view.GraceSplashScreenView;
-import com.grace.app.interactor.GraceSplashScreenInteractor;
 
 import javax.inject.Inject;
 

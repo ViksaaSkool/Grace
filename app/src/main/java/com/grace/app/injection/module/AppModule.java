@@ -3,12 +3,13 @@ package com.grace.app.injection.module;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
-import android.support.annotation.NonNull;
+
+import androidx.annotation.NonNull;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
 import com.grace.app.GraceApplication;
-import com.grace.app.model.GraceApiCall;
+import com.grace.app.custom.FoodDetector;
 
 import javax.inject.Singleton;
 
@@ -47,10 +48,11 @@ public final class AppModule {
     }
 
 
+
     @Provides
     @Singleton
-    GraceApiCall provideGraceApiCall() {
-        return new GraceApiCall();
+    FoodDetector provideFoodDetector() {
+        return new FoodDetector();
     }
 
 }

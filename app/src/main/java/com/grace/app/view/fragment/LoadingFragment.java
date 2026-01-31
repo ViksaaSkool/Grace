@@ -3,16 +3,18 @@ package com.grace.app.view.fragment;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.grace.app.R;
 import com.grace.app.constants.Constants;
+import com.grace.app.databinding.FragmentLoadingBinding;
 import com.grace.app.injection.componenet.AppComponent;
 import com.grace.app.injection.componenet.view.DaggerLoadingViewComponent;
 import com.grace.app.injection.module.view.LoadingViewModule;
@@ -28,20 +30,15 @@ import com.grace.app.view.impl.BaseFragment;
 
 import javax.inject.Inject;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
 import uk.co.chrisjenx.calligraphy.BuildConfig;
 
 public final class LoadingFragment extends BaseFragment<LoadingPresenter, LoadingView> implements LoadingView {
 
     @Inject
     PresenterFactory<LoadingPresenter> mPresenterFactory;
-    @BindView(R.id.loading_text_view)
-    TextView mLoadingTextView;
-    @BindView(R.id.grace_loading_image_view)
-    ImageView mGraceLoadingImageView;
-    Unbinder unbinder;
+    private FragmentLoadingBinding mBinding;
+    private TextView mLoadingTextView;
+    private ImageView mGraceLoadingImageView;
 
     private String mPhotoUri = "";
     private int mLoadingMessage = -1;
@@ -69,8 +66,10 @@ public final class LoadingFragment extends BaseFragment<LoadingPresenter, Loadin
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_loading, container, false);
-        unbinder = ButterKnife.bind(this, view);
+        mBinding = FragmentLoadingBinding.inflate(inflater, container, false);
+        View view = mBinding.getRoot();
+        mLoadingTextView = mBinding.loadingTextView;
+        mGraceLoadingImageView = mBinding.graceLoadingImageView;
         getLoadingArguments();
         return view;
     }
@@ -89,8 +88,6 @@ public final class LoadingFragment extends BaseFragment<LoadingPresenter, Loadin
     public void onStart() {
         super.onStart();
         startLoadingAnimation();
-        takePhotoAction();
-
     }
 
     /**
@@ -137,6 +134,11 @@ public final class LoadingFragment extends BaseFragment<LoadingPresenter, Loadin
             }
             working = true;
         }
+    }
+
+    @Override
+    protected void onPresenterReady() {
+        takePhotoAction();
     }
 
 
@@ -193,7 +195,7 @@ public final class LoadingFragment extends BaseFragment<LoadingPresenter, Loadin
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        unbinder.unbind();
+        mBinding = null;
     }
 
 

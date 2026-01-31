@@ -1,6 +1,6 @@
 package com.grace.app.injection.module.view;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.grace.app.interactor.PhotoInteractor;
 import com.grace.app.interactor.impl.PhotoInteractorImpl;
@@ -25,12 +25,6 @@ public class PhotoModule {
 
     @Provides
     public PresenterFactory<PhotoPresenter> providePresenterFactory(@NonNull final PhotoInteractor interactor) {
-        return new PresenterFactory<PhotoPresenter>() {
-            @NonNull
-            @Override
-            public PhotoPresenter create() {
-                return new PhotoPresenterImpl(interactor);
-            }
-        };
+        return () -> new PhotoPresenterImpl(interactor);
     }
 }

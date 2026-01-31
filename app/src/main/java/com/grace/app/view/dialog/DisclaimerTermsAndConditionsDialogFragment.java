@@ -3,28 +3,25 @@ package com.grace.app.view.dialog;
 import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.design.widget.TabLayout;
-import android.support.v4.view.ViewPager;
-import android.support.v7.content.res.AppCompatResources;
-import android.support.v7.widget.AppCompatCheckBox;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
+import androidx.appcompat.content.res.AppCompatResources;
+import androidx.appcompat.widget.AppCompatCheckBox;
+import androidx.viewpager.widget.ViewPager;
+
+import com.google.android.material.tabs.TabLayout;
 import com.grace.app.GraceApplication;
 import com.grace.app.R;
 import com.grace.app.adapter.DisclaimerTncViewPagerAdapter;
 import com.grace.app.constants.Constants;
+import com.grace.app.databinding.DialogDisclaimerTncBinding;
 
 import javax.inject.Inject;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
-import butterknife.Unbinder;
 
 /**
  * Created by varsovski on 21-May-17.
@@ -32,18 +29,12 @@ import butterknife.Unbinder;
 
 public class DisclaimerTermsAndConditionsDialogFragment extends BaseDialogFragment {
 
-
-    @BindView(R.id.title_text_view)
-    TextView mTitleTextView;
-    @BindView(R.id.dots_tab_layout)
-    TabLayout mDotsTabLayout;
-    @BindView(R.id.terms_and_conditions_check_box)
-    AppCompatCheckBox mTermsAndConditionsCheckBox;
-    @BindView(R.id.action_text_view)
-    TextView mActionTextView;
-    @BindView(R.id.content_view_pager)
-    ViewPager mContentViewPager;
-    Unbinder unbinder;
+    private DialogDisclaimerTncBinding mBinding;
+    private TextView mTitleTextView;
+    private TabLayout mDotsTabLayout;
+    private AppCompatCheckBox mTermsAndConditionsCheckBox;
+    private TextView mActionTextView;
+    private ViewPager mContentViewPager;
 
     @Inject
     SharedPreferences mSharedPreferences;
@@ -51,9 +42,26 @@ public class DisclaimerTermsAndConditionsDialogFragment extends BaseDialogFragme
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.dialog_disclaimer_tnc, container, false);
+        mBinding = DialogDisclaimerTncBinding.inflate(inflater, container, false);
+        View v = mBinding.getRoot();
         GraceApplication.getAppComponent().inject(this);
-        unbinder = ButterKnife.bind(this, v);
+        mTitleTextView = mBinding.titleTextView;
+        mDotsTabLayout = mBinding.dotsTabLayout;
+        mTermsAndConditionsCheckBox = mBinding.termsAndConditionsCheckBox;
+        mActionTextView = mBinding.actionTextView;
+        mContentViewPager = mBinding.contentViewPager;
+        mBinding.exitAppTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onViewClicked(view);
+            }
+        });
+        mBinding.actionTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onViewClicked(view);
+            }
+        });
         return v;
     }
 
@@ -100,27 +108,24 @@ public class DisclaimerTermsAndConditionsDialogFragment extends BaseDialogFragme
         }
     }
 
-    @OnClick({R.id.exit_app_text_view, R.id.action_text_view})
     public void onViewClicked(View view) {
-        switch (view.getId()) {
-            case R.id.exit_app_text_view:
-                getActivity().finish();
-                break;
-            case R.id.action_text_view:
-                //Next
-                if (mActionTextView.getText()
-                        .toString().equals(getString(R.string.next_step_text))) {
-                    mActionTextView.setText(R.string.enter_app_text);
-                    setNextArrow(false);
-                    mContentViewPager.setCurrentItem(1);
-                }
-                //OK
-                else {
-                    mSharedPreferences.edit()
-                            .putBoolean(Constants.DISCLAIMER_TNC_KEY, true).apply();
-                    dismiss();
-                }
-                break;
+        int id = view.getId();
+        if (id == R.id.exit_app_text_view) {
+            getActivity().finish();
+        } else if (id == R.id.action_text_view) {
+            //Next
+            if (mActionTextView.getText()
+                    .toString().equals(getString(R.string.next_step_text))) {
+                mActionTextView.setText(R.string.enter_app_text);
+                setNextArrow(false);
+                mContentViewPager.setCurrentItem(1);
+            }
+            //OK
+            else {
+                mSharedPreferences.edit()
+                        .putBoolean(Constants.DISCLAIMER_TNC_KEY, true).apply();
+                dismiss();
+            }
         }
     }
 
@@ -157,6 +162,6 @@ public class DisclaimerTermsAndConditionsDialogFragment extends BaseDialogFragme
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        unbinder.unbind();
+        mBinding = null;
     }
 }

@@ -2,16 +2,18 @@ package com.grace.app.view.fragment;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.grace.app.R;
 import com.grace.app.constants.Constants;
+import com.grace.app.databinding.FragmentGetMealFromBinding;
 import com.grace.app.injection.componenet.AppComponent;
 import com.grace.app.injection.componenet.view.DaggerGetMealFromComponent;
 import com.grace.app.injection.module.view.GetMealFromModule;
@@ -24,11 +26,6 @@ import com.grace.app.view.helper.ChangeFragmentHelper;
 import com.grace.app.view.impl.BaseFragment;
 
 import javax.inject.Inject;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
-import butterknife.Unbinder;
 
 /**
  * Created by varsovski on 24-Dec-16.
@@ -43,11 +40,9 @@ public class GetMealFromFragment extends BaseFragment<GetMealFromPresenter, GetM
 
     private boolean disclaimerIsShown = false;
 
-    Unbinder unbinder;
-    @BindView(R.id.capture_meal_linear_layout)
-    RelativeLayout mCaptureMealRelativeLayout;
-    @BindView(R.id.from_gallery_linear_layout)
-    RelativeLayout mFromGalleryRelativeLayout;
+    private FragmentGetMealFromBinding mBinding;
+    private RelativeLayout mCaptureMealRelativeLayout;
+    private RelativeLayout mFromGalleryRelativeLayout;
 
 
     public GetMealFromFragment() {
@@ -59,8 +54,22 @@ public class GetMealFromFragment extends BaseFragment<GetMealFromPresenter, GetM
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_get_meal_from, container, false);
-        unbinder = ButterKnife.bind(this, view);
+        mBinding = FragmentGetMealFromBinding.inflate(inflater, container, false);
+        View view = mBinding.getRoot();
+        mCaptureMealRelativeLayout = mBinding.captureMealLinearLayout;
+        mFromGalleryRelativeLayout = mBinding.fromGalleryLinearLayout;
+        mBinding.captureMealLinearLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onViewClicked(v);
+            }
+        });
+        mBinding.fromGalleryLinearLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onViewClicked(v);
+            }
+        });
         changeStatusBarColor(R.color.colorPrimaryDark);
 
         return view;
@@ -94,22 +103,19 @@ public class GetMealFromFragment extends BaseFragment<GetMealFromPresenter, GetM
 
     }
 
-    @OnClick({R.id.capture_meal_linear_layout, R.id.from_gallery_linear_layout})
     public void onViewClicked(View view) {
-        switch (view.getId()) {
-            case R.id.capture_meal_linear_layout:
-                ((Main2Activity) getActivity()).startExternalCamera();
-                break;
-            case R.id.from_gallery_linear_layout:
-                ((Main2Activity) getActivity()).getPhotosFromGallery();
-                break;
+        int id = view.getId();
+        if (id == R.id.capture_meal_linear_layout) {
+            ((Main2Activity) getActivity()).startExternalCamera();
+        } else if (id == R.id.from_gallery_linear_layout) {
+            ((Main2Activity) getActivity()).getPhotosFromGallery();
         }
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        unbinder.unbind();
+        mBinding = null;
     }
 
 

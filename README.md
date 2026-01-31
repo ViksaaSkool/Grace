@@ -11,6 +11,17 @@ he does his magic.
 For more visit the [offical page](https://blessameal.com/).
 Needles to say - it's a joke. 
 
+# Refactor Summary
+
+- Replaced ButterKnife with ViewBinding across activities, fragments, and dialogs.
+- Modernized background work (removed AsyncTask usage in loading/blessing flows).
+- Updated Glide usage and custom transformation to Glide 4 APIs.
+- Fixed runtime crashes (FileProvider sharing, dialog feature timing, Calligraphy removal).
+- Added multidex and updated minSdk to meet dependency requirements.
+- Switched image recognition to on-device ML Kit (no API call).
+
+Refactored prompt artifacts: [art/refactored_prompts](art/refactored_prompts)
+
 # Here are the screenshots
 1. Upload photo
 <img src="https://github.com/ViksaaSkool/Grace/blob/master/art/m1.png" width="190" height="280"/>

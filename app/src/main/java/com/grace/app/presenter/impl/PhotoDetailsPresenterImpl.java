@@ -1,10 +1,10 @@
 package com.grace.app.presenter.impl;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
+import com.grace.app.interactor.PhotoDetailsInteractor;
 import com.grace.app.presenter.PhotoDetailsPresenter;
 import com.grace.app.view.PhotoDetailsView;
-import com.grace.app.interactor.PhotoDetailsInteractor;
 
 import javax.inject.Inject;
 

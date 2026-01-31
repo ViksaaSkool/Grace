@@ -1,7 +1,7 @@
 package com.grace.app.view.helper;
 
-import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.grace.app.model.MealPhoto;
 import com.grace.app.view.dialog.DisclaimerTermsAndConditionsDialogFragment;

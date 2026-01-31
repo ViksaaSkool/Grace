@@ -1,6 +1,6 @@
 package com.grace.app.injection.module.view;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.grace.app.interactor.GetMealFromInteractor;
 import com.grace.app.interactor.impl.GetMealFromInteractorImpl;
@@ -24,12 +24,6 @@ public class GetMealFromModule {
 
     @Provides
     public PresenterFactory<GetMealFromPresenter> providePresenterFactory(@NonNull final GetMealFromInteractor interactor) {
-        return new PresenterFactory<GetMealFromPresenter>() {
-            @NonNull
-            @Override
-            public GetMealFromPresenter create() {
-                return new GetMealFromPresenterImpl(interactor);
-            }
-        };
+        return () -> new GetMealFromPresenterImpl(interactor);
     }
 }

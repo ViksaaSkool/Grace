@@ -1,6 +1,6 @@
 package com.grace.app.presenter.impl;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.grace.app.interactor.PhotoInteractor;
 import com.grace.app.presenter.PhotoPresenter;

@@ -5,9 +5,6 @@ import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.app.AppCompatDelegate;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,11 +13,17 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
+
 import com.balysv.materialripple.MaterialRippleLayout;
 import com.bumptech.glide.RequestManager;
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.grace.app.R;
 import com.grace.app.constants.Constants;
 import com.grace.app.custom.BitmapCropTransformation;
+import com.grace.app.databinding.FragmentPhotoBinding;
 import com.grace.app.injection.componenet.AppComponent;
 import com.grace.app.injection.componenet.view.DaggerPhotoComponent;
 import com.grace.app.injection.module.view.PhotoModule;
@@ -38,11 +41,6 @@ import com.lb.auto_fit_textview.AutoResizeTextView;
 
 import javax.inject.Inject;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
-import butterknife.Unbinder;
-
 
 /**
  * Created by varsovski on 24-Dec-16.
@@ -55,33 +53,19 @@ public class PhotoFragment extends BaseFragment<PhotoPresenter, PhotoView> imple
     @Inject
     RequestManager mRequestManager;
 
-
-    @BindView(R.id.meal_image_view)
-    ImageView mMealImageView;
-    @BindView(R.id.meal_background_relative_layout)
-    RelativeLayout mMealBackgroundRelativeLayout;
-    @BindView(R.id.title_text_view)
-    TextView mTitleTextView;
-    @BindView(R.id.subtitle_text_view)
-    AutoResizeTextView mSubtitleTextView;
-    @BindView(R.id.left_button)
-    Button mLeftButton;
-    @BindView(R.id.right_button)
-    Button mRightButton;
-    @BindView(R.id.error_image_view)
-    ImageView mErrorImageView;
-    @BindView(R.id.error_relative_layout)
-    RelativeLayout mErrorRelativeLayout;
-    @BindView(R.id.overlay_relative_layout)
-    RelativeLayout mOverlayRelativeLayout;
-    @BindView(R.id.left_button_ripple)
-    MaterialRippleLayout mLeftButtonRipple;
-    @BindView(R.id.right_button_ripple)
-    MaterialRippleLayout mRightButtonRipple;
-    @BindView(R.id.tap_full_relative_layout)
-    RelativeLayout mTapFullRelativeLayout;
-
-    Unbinder unbinder;
+    private FragmentPhotoBinding mBinding;
+    private ImageView mMealImageView;
+    private RelativeLayout mMealBackgroundRelativeLayout;
+    private TextView mTitleTextView;
+    private AutoResizeTextView mSubtitleTextView;
+    private Button mLeftButton;
+    private Button mRightButton;
+    private ImageView mErrorImageView;
+    private RelativeLayout mErrorRelativeLayout;
+    private RelativeLayout mOverlayRelativeLayout;
+    private MaterialRippleLayout mLeftButtonRipple;
+    private MaterialRippleLayout mRightButtonRipple;
+    private RelativeLayout mTapFullRelativeLayout;
 
     private MealPhoto mMealPhoto;
     private boolean feelingWraith = false;
@@ -99,9 +83,39 @@ public class PhotoFragment extends BaseFragment<PhotoPresenter, PhotoView> imple
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_photo, container, false);
+        mBinding = FragmentPhotoBinding.inflate(inflater, container, false);
+        View view = mBinding.getRoot();
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
-        unbinder = ButterKnife.bind(this, view);
+        mMealImageView = mBinding.mealImageView;
+        mMealBackgroundRelativeLayout = mBinding.mealBackgroundRelativeLayout;
+        mTitleTextView = mBinding.titleTextView;
+        mSubtitleTextView = mBinding.subtitleTextView;
+        mLeftButton = mBinding.leftButton;
+        mRightButton = mBinding.rightButton;
+        mErrorImageView = mBinding.errorImageView;
+        mErrorRelativeLayout = mBinding.errorRelativeLayout;
+        mOverlayRelativeLayout = mBinding.overlayRelativeLayout;
+        mLeftButtonRipple = mBinding.leftButtonRipple;
+        mRightButtonRipple = mBinding.rightButtonRipple;
+        mTapFullRelativeLayout = mBinding.tapFullRelativeLayout;
+        mBinding.mealBackgroundRelativeLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onViewClicked(v);
+            }
+        });
+        mBinding.leftButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onViewClicked(v);
+            }
+        });
+        mBinding.rightButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onViewClicked(v);
+            }
+        });
         getMealPhotoAndInitUI();
         return view;
     }
@@ -157,10 +171,10 @@ public class PhotoFragment extends BaseFragment<PhotoPresenter, PhotoView> imple
                     mErrorRelativeLayout.setVisibility(View.GONE);
                     mOverlayRelativeLayout.setVisibility(View.VISIBLE);
                     mRequestManager.load(mMealPhoto.getPhotoUri())
-                            .bitmapTransform(new BitmapCropTransformation(getActivity(),
+                            .transform(new BitmapCropTransformation(
                                     (int) (UiUtil.containerHeight((AppCompatActivity) getActivity()) * 0.6),
                                     UiUtil.containerWidth((AppCompatActivity) getActivity())))
-                            .crossFade(Constants.CROSS_FADE_DURATION)
+                            .transition(DrawableTransitionOptions.withCrossFade(Constants.CROSS_FADE_DURATION))
                             .into(mMealImageView);
 
                     changeStatusBarColor(android.R.color.black);
@@ -186,82 +200,64 @@ public class PhotoFragment extends BaseFragment<PhotoPresenter, PhotoView> imple
     }
 
 
-    @OnClick({R.id.meal_background_relative_layout, R.id.left_button, R.id.right_button})
     public void onViewClicked(View view) {
-        switch (view.getId()) {
-            case R.id.meal_background_relative_layout:
-                handlePhotoClick();
-                mTapFullRelativeLayout.setVisibility(View.GONE);
-                break;
-            case R.id.left_button:
-                handleLeftButtonClick();
-                break;
-            case R.id.right_button:
-                handleRightButtonClick();
-                break;
+        int id = view.getId();
+        if (id == R.id.meal_background_relative_layout) {
+            handlePhotoClick();
+            mTapFullRelativeLayout.setVisibility(View.GONE);
+        } else if (id == R.id.left_button) {
+            handleLeftButtonClick();
+        } else if (id == R.id.right_button) {
+            handleRightButtonClick();
         }
     }
 
     private void handleLeftButtonClick() {
-        switch (mMealPhoto.getLeftButtonText()) {
-            case R.string.done_text:
-                ChangeFragmentHelper.setGetMealFromFragment((AppCompatActivity) getActivity(), R.id.main_frame_layout);
-                break;
+        int textId = mMealPhoto.getLeftButtonText();
+        if (textId == R.string.done_text || textId == R.string.no_text) {
+            ChangeFragmentHelper.setGetMealFromFragment((AppCompatActivity) getActivity(), R.id.main_frame_layout);
+        } else if (textId == R.string.feel_wraith_text) {
+            //TODO animation
+            if (!feelingWraith) {
+                ObjectAnimator graceLoadingAnimator = ObjectAnimator.ofFloat(mErrorImageView, "alpha", 1.0f, 0.1f)
+                        .setDuration(Constants.LOADING_ANIMATION_DURATION);
+                graceLoadingAnimator.setRepeatMode(ValueAnimator.REVERSE);
+                graceLoadingAnimator.setRepeatCount(ValueAnimator.INFINITE);
+                graceLoadingAnimator.start();
+                graceLoadingAnimator.addListener(new Animator.AnimatorListener() {
+                    @Override
+                    public void onAnimationStart(Animator animation) {
+                        feelingWraith = true;
+                    }
 
-            case R.string.no_text:
-                ChangeFragmentHelper.setGetMealFromFragment((AppCompatActivity) getActivity(), R.id.main_frame_layout);
-                break;
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        feelingWraith = false;
+                    }
 
-            case R.string.feel_wraith_text:
-                //TODO animation
-                if (!feelingWraith) {
-                    ObjectAnimator graceLoadingAnimator = ObjectAnimator.ofFloat(mErrorImageView, "alpha", 1.0f, 0.1f)
-                            .setDuration(Constants.LOADING_ANIMATION_DURATION);
-                    graceLoadingAnimator.setRepeatMode(ValueAnimator.REVERSE);
-                    graceLoadingAnimator.setRepeatCount(ValueAnimator.INFINITE);
-                    graceLoadingAnimator.start();
-                    graceLoadingAnimator.addListener(new Animator.AnimatorListener() {
-                        @Override
-                        public void onAnimationStart(Animator animation) {
-                            feelingWraith = true;
-                        }
+                    @Override
+                    public void onAnimationCancel(Animator animation) {
+                        feelingWraith = false;
+                    }
 
-                        @Override
-                        public void onAnimationEnd(Animator animation) {
-                            feelingWraith = false;
-                        }
+                    @Override
+                    public void onAnimationRepeat(Animator animation) {
 
-                        @Override
-                        public void onAnimationCancel(Animator animation) {
-                            feelingWraith = false;
-                        }
-
-                        @Override
-                        public void onAnimationRepeat(Animator animation) {
-
-                        }
-                    });
-                }
-                break;
-
+                    }
+                });
+            }
         }
     }
 
     private void handleRightButtonClick() {
-        switch (mMealPhoto.getRightButtonText()) {
-
-            case R.string.yes_text:
-                ChangeFragmentHelper.setLoadingFragment((AppCompatActivity) getActivity(), R.id.main_frame_layout,
-                        mMealPhoto.getPhotoUri(), R.string.blessing_photo_text);
-                break;
-
-            case R.string.share_text:
-                ShareUtil.shareBlessedPhoto(getActivity(), mMealPhoto.getPhotoUri());
-                break;
-
-            case R.string.another_try_text:
-                ChangeFragmentHelper.setGetMealFromFragment((AppCompatActivity) getActivity(), R.id.main_frame_layout);
-                break;
+        int textId = mMealPhoto.getRightButtonText();
+        if (textId == R.string.yes_text) {
+            ChangeFragmentHelper.setLoadingFragment((AppCompatActivity) getActivity(), R.id.main_frame_layout,
+                    mMealPhoto.getPhotoUri(), R.string.blessing_photo_text);
+        } else if (textId == R.string.share_text) {
+            ShareUtil.shareBlessedPhoto(getActivity(), mMealPhoto.getPhotoUri());
+        } else if (textId == R.string.another_try_text) {
+            ChangeFragmentHelper.setGetMealFromFragment((AppCompatActivity) getActivity(), R.id.main_frame_layout);
         }
     }
 
@@ -285,7 +281,7 @@ public class PhotoFragment extends BaseFragment<PhotoPresenter, PhotoView> imple
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        unbinder.unbind();
+        mBinding = null;
     }
 
 

@@ -9,16 +9,18 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.MediaStore;
-import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.content.FileProvider;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.app.AppCompatDelegate;
 import android.widget.FrameLayout;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
+import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
+
+import com.google.android.material.snackbar.Snackbar;
 import com.grace.app.R;
 import com.grace.app.constants.Constants;
+import com.grace.app.databinding.ActivityMainBinding;
 import com.grace.app.injection.componenet.AppComponent;
 import com.grace.app.injection.componenet.view.DaggerMain2ViewComponent;
 import com.grace.app.injection.module.view.Main2ViewModule;
@@ -38,20 +40,17 @@ import java.util.Arrays;
 
 import javax.inject.Inject;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-
 public final class Main2Activity extends BaseActivity<Main2Presenter, Main2View> implements Main2View {
 
     @Inject
     PresenterFactory<Main2Presenter> mPresenterFactory;
     @Inject
     SharedPreferences mSharedPreferences;
-    @BindView(R.id.main_frame_layout)
-    FrameLayout mRootLayout;
+    private ActivityMainBinding mBinding;
+    private FrameLayout mRootLayout;
 
     private static final int PERMISSION_CAMERA_CODE = 1;
-    private static final int PERMISSION_READ_WRITE_CODE = 2;
+    private static final int PERMISSION_READ_MEDIA_CODE = 2;
 
     private String mCameraPhoto = "";
 
@@ -64,8 +63,9 @@ public final class Main2Activity extends BaseActivity<Main2Presenter, Main2View>
     protected void onCreate(Bundle savedInstanceState) {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        ButterKnife.bind(this);
+        mBinding = ActivityMainBinding.inflate(getLayoutInflater());
+        setContentView(mBinding.getRoot());
+        mRootLayout = mBinding.mainFrameLayout;
         EventBus.getDefault().register(this);
         ChangeFragmentHelper.setGetMealFromFragment(this, R.id.main_frame_layout);
     }
@@ -121,17 +121,17 @@ public final class Main2Activity extends BaseActivity<Main2Presenter, Main2View>
                 }
                 break;
 
-            case PERMISSION_READ_WRITE_CODE:
-                if (grantResults[0] == 0 && grantResults[1] == 0) {
+            case PERMISSION_READ_MEDIA_CODE:
+                if (allGranted(grantResults)) {
                     LogUtil.d(Constants.APP_TAG, "onRequestPermissionsResult() | " +
-                            "PERMISSION_READ_WRITE granted!");
+                            "PERMISSION_READ_MEDIA granted!");
                     if (buttonFlag == R.id.from_gallery_linear_layout)
                         getPhotosFromGallery();
                     else
                         startExternalCamera();
                 } else {
                     LogUtil.d(Constants.APP_TAG, "onRequestPermissionsResult() | " +
-                            "PERMISSION_READ_WRITE NOT granted!");
+                            "PERMISSION_READ_MEDIA NOT granted!");
                     showSnackBarMessage(getString(R.string.permission_not_granted_text));
                 }
                 break;
@@ -148,9 +148,8 @@ public final class Main2Activity extends BaseActivity<Main2Presenter, Main2View>
      * Camera app in order to take meal Photo for blessing
      */
     public void startExternalCamera() {
-        if ((ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED
-                && ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED)
-                || Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M
+                || ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
             LogUtil.d(Constants.APP_TAG, "startExternalCamera() | has permission or is <M");
 
             Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -179,11 +178,7 @@ public final class Main2Activity extends BaseActivity<Main2Presenter, Main2View>
         } else {
             LogUtil.d(Constants.APP_TAG, "startExternalCamera() | request permission");
             buttonFlag = R.id.capture_meal_linear_layout;
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED)
-                requestPermissions(new String[]{Manifest.permission.CAMERA}, PERMISSION_CAMERA_CODE);
-            else
-                requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE,
-                        Manifest.permission.WRITE_EXTERNAL_STORAGE}, PERMISSION_READ_WRITE_CODE);
+            requestPermissions(new String[]{Manifest.permission.CAMERA}, PERMISSION_CAMERA_CODE);
 
         }
     }
@@ -194,9 +189,7 @@ public final class Main2Activity extends BaseActivity<Main2Presenter, Main2View>
      * order to select photo for blessing
      */
     public void getPhotosFromGallery() {
-        if ((ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
-                && ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED)
-                || Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M || hasReadImagesPermission()) {
             LogUtil.d(Constants.APP_TAG, "getPhotosFromGallery() | has permission or is <M");
             Intent galleryIntent = new Intent(Intent.ACTION_PICK,
                     MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
@@ -204,10 +197,37 @@ public final class Main2Activity extends BaseActivity<Main2Presenter, Main2View>
         } else {
             LogUtil.d(Constants.APP_TAG, "getPhotosFromGallery() | request permission");
             buttonFlag = R.id.from_gallery_linear_layout;
-            requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE,
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE}, PERMISSION_READ_WRITE_CODE);
+            requestPermissions(getReadImagesPermissions(), PERMISSION_READ_MEDIA_CODE);
         }
 
+    }
+
+    private boolean hasReadImagesPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            return ContextCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_IMAGES)
+                    == PackageManager.PERMISSION_GRANTED;
+        }
+        return ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
+                == PackageManager.PERMISSION_GRANTED;
+    }
+
+    private String[] getReadImagesPermissions() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            return new String[]{Manifest.permission.READ_MEDIA_IMAGES};
+        }
+        return new String[]{Manifest.permission.READ_EXTERNAL_STORAGE};
+    }
+
+    private boolean allGranted(int[] grantResults) {
+        if (grantResults == null || grantResults.length == 0) {
+            return false;
+        }
+        for (int result : grantResults) {
+            if (result != PackageManager.PERMISSION_GRANTED) {
+                return false;
+            }
+        }
+        return true;
     }
 
 

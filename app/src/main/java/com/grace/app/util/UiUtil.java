@@ -1,10 +1,11 @@
 package com.grace.app.util;
 
-import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.ScaleAnimation;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 /**
  * Created by varsovski on 03-Jun-17.

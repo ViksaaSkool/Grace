@@ -1,7 +1,6 @@
 package com.grace.app.view.fragment;
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,14 +11,13 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
-import com.grace.app.R;
+import androidx.fragment.app.Fragment;
+
 import com.grace.app.constants.Constants;
+import com.grace.app.databinding.FragmentDisclaimerTncBinding;
 import com.grace.app.util.LogUtil;
 import com.udevel.widgetlab.TypingIndicatorView;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
 
 /**
  * Created by varsovski on 21-May-17.
@@ -27,12 +25,9 @@ import butterknife.Unbinder;
 
 public class DisclaimerTermsAndConditionsFragment extends Fragment {
 
-
-    @BindView(R.id.disclaimer_tnc_web_view)
-    WebView mDisclaimerTncWebView;
-    Unbinder unbinder;
-    @BindView(R.id.loading_typing_indicator_view)
-    TypingIndicatorView mLoadingTypingIndicatorView;
+    private FragmentDisclaimerTncBinding mBinding;
+    private WebView mDisclaimerTncWebView;
+    private TypingIndicatorView mLoadingTypingIndicatorView;
 
     private String mUrl;
 
@@ -46,9 +41,10 @@ public class DisclaimerTermsAndConditionsFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_disclaimer_tnc, container, false);
-        unbinder = ButterKnife.bind(this, view);
-        return view;
+        mBinding = FragmentDisclaimerTncBinding.inflate(inflater, container, false);
+        mDisclaimerTncWebView = mBinding.disclaimerTncWebView;
+        mLoadingTypingIndicatorView = mBinding.loadingTypingIndicatorView;
+        return mBinding.getRoot();
     }
 
     @Override
@@ -110,6 +106,6 @@ public class DisclaimerTermsAndConditionsFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        unbinder.unbind();
+        mBinding = null;
     }
 }

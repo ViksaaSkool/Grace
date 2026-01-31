@@ -1,14 +1,22 @@
 package com.grace.app.view.activity;
 
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
+import android.view.View;
+
+import androidx.annotation.NonNull;
 
 import com.bumptech.glide.RequestManager;
-import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
+import com.github.chrisbanes.photoview.PhotoView;
+import com.github.chrisbanes.photoview.PhotoViewAttacher;
 import com.grace.app.R;
 import com.grace.app.constants.Constants;
+import com.grace.app.databinding.ActivityPhotoDetailsBinding;
 import com.grace.app.injection.componenet.AppComponent;
 import com.grace.app.injection.componenet.view.DaggerPhotoDetailsViewComponent;
 import com.grace.app.injection.module.view.PhotoDetailsViewModule;
@@ -21,12 +29,6 @@ import java.io.File;
 
 import javax.inject.Inject;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
-import uk.co.senab.photoview.PhotoView;
-import uk.co.senab.photoview.PhotoViewAttacher;
-
 public final class PhotoDetailsActivity extends BaseActivity<PhotoDetailsPresenter, PhotoDetailsView> implements PhotoDetailsView {
 
     @Inject
@@ -34,16 +36,23 @@ public final class PhotoDetailsActivity extends BaseActivity<PhotoDetailsPresent
     @Inject
     RequestManager mRequestManager;
 
-    @BindView(R.id.details_photo_view)
-    PhotoView mDetailsPhotoView;
+    private ActivityPhotoDetailsBinding mBinding;
+    private PhotoView mDetailsPhotoView;
 
     PhotoViewAttacher mAttacher;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_photo_details);
-        ButterKnife.bind(this);
+        mBinding = ActivityPhotoDetailsBinding.inflate(getLayoutInflater());
+        setContentView(mBinding.getRoot());
+        mDetailsPhotoView = mBinding.detailsPhotoView;
+        mBinding.closeImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
         initUI();
 
     }
@@ -68,27 +77,27 @@ public final class PhotoDetailsActivity extends BaseActivity<PhotoDetailsPresent
                 mAttacher.setZoomable(false);
 
                 mRequestManager.load(new File(uri))
-                        .listener(new RequestListener<File, GlideDrawable>() {
+                        .listener(new RequestListener<Drawable>() {
                             @Override
-                            public boolean onException(Exception e,
-                                                       File model,
-                                                       Target<GlideDrawable> target,
-                                                       boolean isFirstResource) {
+                            public boolean onLoadFailed(GlideException e,
+                                                        Object model,
+                                                        Target<Drawable> target,
+                                                        boolean isFirstResource) {
                                 return false;
                             }
 
                             @Override
-                            public boolean onResourceReady(GlideDrawable resource,
-                                                           File model,
-                                                           Target<GlideDrawable> target,
-                                                           boolean isFromMemoryCache,
+                            public boolean onResourceReady(Drawable resource,
+                                                           Object model,
+                                                           Target<Drawable> target,
+                                                           DataSource dataSource,
                                                            boolean isFirstResource) {
                                 mAttacher.setZoomable(true);
                                 mAttacher.update();
                                 return false;
                             }
                         })
-                        .crossFade(Constants.CROSS_FADE_DURATION)
+                        .transition(DrawableTransitionOptions.withCrossFade(Constants.CROSS_FADE_DURATION))
                         .into(mDetailsPhotoView);
             }
         }
@@ -105,11 +114,6 @@ public final class PhotoDetailsActivity extends BaseActivity<PhotoDetailsPresent
         overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
     }
 
-
-    @OnClick(R.id.close_image_view)
-    public void onViewClicked() {
-        onBackPressed();
-    }
 
     @NonNull
     @Override

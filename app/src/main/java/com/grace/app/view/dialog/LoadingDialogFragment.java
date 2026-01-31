@@ -2,8 +2,6 @@ package com.grace.app.view.dialog;
 
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.annotation.Nullable;
-import android.support.v4.app.DialogFragment;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,11 +11,12 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.grace.app.R;
-import com.grace.app.constants.Constants;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.DialogFragment;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
+import com.grace.app.constants.Constants;
+import com.grace.app.databinding.DialogLoadingBinding;
+
 
 /**
  * Created by varsovski on 24-Dec-16.
@@ -25,12 +24,10 @@ import butterknife.ButterKnife;
 
 public class LoadingDialogFragment extends DialogFragment {
 
-    @BindView(R.id.loading_image_view)
-    ImageView mLoadingImageView;
-    @BindView(R.id.loading_text_view)
-    TextView mLoadingTextView;
-    @BindView(R.id.root_relative_layout)
-    RelativeLayout mRootRelativeLayout;
+    private DialogLoadingBinding mBinding;
+    private ImageView mLoadingImageView;
+    private TextView mLoadingTextView;
+    private RelativeLayout mRootRelativeLayout;
 
     private Handler mHandler;
     private Runnable mRunnable;
@@ -47,8 +44,11 @@ public class LoadingDialogFragment extends DialogFragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.dialog_loading, container, false);
-        ButterKnife.bind(this, v);
+        mBinding = DialogLoadingBinding.inflate(inflater, container, false);
+        View v = mBinding.getRoot();
+        mLoadingImageView = mBinding.loadingImageView;
+        mLoadingTextView = mBinding.loadingTextView;
+        mRootRelativeLayout = mBinding.rootRelativeLayout;
         initUI();
         return v;
     }
@@ -88,6 +88,12 @@ public class LoadingDialogFragment extends DialogFragment {
         super.onPause();
         if (mHandler != null)
             mHandler.removeCallbacks(mRunnable);
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        mBinding = null;
     }
 
     private void setLoadingTextAnimation(final TextView textView) {

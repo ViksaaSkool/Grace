@@ -1,7 +1,8 @@
 package com.grace.app.presenter.impl;
 
-import android.support.annotation.NonNull;
 import android.view.View;
+
+import androidx.annotation.NonNull;
 
 import com.grace.app.interactor.GetMealFromInteractor;
 import com.grace.app.presenter.GetMealFromPresenter;

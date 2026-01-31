@@ -2,14 +2,15 @@ package com.grace.app.view.impl;
 
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.content.Loader;
 import android.view.Window;
 import android.view.WindowManager;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
+import androidx.loader.app.LoaderManager;
+import androidx.loader.content.Loader;
 
 import com.grace.app.GraceApplication;
 import com.grace.app.injection.componenet.AppComponent;
@@ -55,8 +56,7 @@ public abstract class BaseFragment<P extends BasePresenter<V>, V> extends Fragme
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        // See http://stackoverflow.com/a/32289822/2508174 for the use of getActivity().getSupportLoaderManager()
-        getActivity().getSupportLoaderManager().initLoader(mUniqueLoaderIdentifier, null, this).startLoading();
+        LoaderManager.getInstance(this).initLoader(mUniqueLoaderIdentifier, null, this).startLoading();
     }
 
     private void injectDependencies() {
@@ -86,6 +86,8 @@ public abstract class BaseFragment<P extends BasePresenter<V>, V> extends Fragme
         mPresenter.onStart(mFirstStart);
 
         mFirstStart = false;
+
+        onPresenterReady();
     }
 
     @Override
@@ -156,4 +158,10 @@ public abstract class BaseFragment<P extends BasePresenter<V>, V> extends Fragme
      * @param appComponent the app component
      */
     protected abstract void setupComponent(@NonNull AppComponent appComponent);
+
+    /**
+     * Hook for subclasses that need to act once the presenter is attached and started.
+     */
+    protected void onPresenterReady() {
+    }
 }

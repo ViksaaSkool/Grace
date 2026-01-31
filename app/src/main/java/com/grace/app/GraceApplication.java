@@ -1,18 +1,24 @@
 package com.grace.app;
 
 import android.app.Application;
-import android.support.annotation.NonNull;
+import android.content.Context;
 
-import com.grace.app.constants.Constants;
+import androidx.annotation.NonNull;
+import androidx.multidex.MultiDex;
+
 import com.grace.app.injection.componenet.AppComponent;
 import com.grace.app.injection.componenet.DaggerAppComponent;
 import com.grace.app.injection.module.AppModule;
-import com.grace.app.injection.module.GraceApiModule;
 
-import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
 
 public final class GraceApplication extends Application {
     private static AppComponent mAppComponent;
+
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(base);
+        MultiDex.install(this);
+    }
 
     @Override
     public void onCreate() {
@@ -20,14 +26,9 @@ public final class GraceApplication extends Application {
 
         mAppComponent = DaggerAppComponent.builder()
                 .appModule(new AppModule(this))
-                .graceApiModule(new GraceApiModule())
                 .build();
 
-        CalligraphyConfig.initDefault(new CalligraphyConfig.Builder()
-                .setDefaultFontPath(Constants.CABIN_REGULAR)
-                .setFontAttrId(R.attr.fontPath)
-                .build()
-        );
+        // Calligraphy 2.x is not compatible with modern AppCompat; keep fonts default.
     }
 
     @NonNull
