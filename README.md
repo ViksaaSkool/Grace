@@ -2,25 +2,27 @@
 
 <img src="https://github.com/ViksaaSkool/Grace/blob/master/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png" width="128" height="128"/>
 
-So what is this about? It's simple - mobile application that let's you bless your meals before you eat. You can upload image from your gallery,
-or take photo of a meal and let his Grace bless it. His Grace using [clarifai](https://www.clarifai.com/) check if the meal you've provided is one of meal or not and if it is 
-he does his magic. 
+So what is this about? It's simple - a mobile application that lets you bless your meals before you
+eat. You can upload an image from your gallery,
+or take a photo of a meal and let his Grace bless it. His Grace uses on-device ML Kit image labeling
+to check if the photo is of a meal, and if it is,
+he does his magic.
 
 <img src="https://github.com/ViksaaSkool/Grace/blob/master/art/mobile.png" width="190" height="360"/>
 
 For more visit the [offical page](https://blessameal.com/).
 Needles to say - it's a joke. 
 
-# Refactor Summary
+# Kotlin + Compose Refactor Summary
 
-- Replaced ButterKnife with ViewBinding across activities, fragments, and dialogs.
-- Modernized background work (removed AsyncTask usage in loading/blessing flows).
-- Updated Glide usage and custom transformation to Glide 4 APIs.
-- Fixed runtime crashes (FileProvider sharing, dialog feature timing, Calligraphy removal).
-- Added multidex and updated minSdk to meet dependency requirements.
-- Switched image recognition to on-device ML Kit (no API call).
+- Fully migrated Java → Kotlin and removed legacy MVP/Dagger/EventBus stack.
+- Rebuilt UI with Jetpack Compose and a single-activity + Navigation setup.
+- Adopted MVVM + StateFlow with coroutines for background work.
+- Added Hilt for dependency injection.
+- Preserved SharedPreferences for T&C acceptance state.
+- Kept on-device ML Kit image labeling for meal detection.
 
-Refactored prompt artifacts: [art/refactored_prompts](art/refactored_prompts)
+Refactor artifacts: [art/refactored_prompts](art/refactored_prompts)
 
 # Here are the screenshots
 1. Upload photo
