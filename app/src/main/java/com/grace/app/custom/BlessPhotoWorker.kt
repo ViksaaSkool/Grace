@@ -1,72 +1,52 @@
-package com.grace.app.custom;
+package com.grace.app.custom
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import com.grace.app.R
+import com.grace.app.constants.Constants
+import com.grace.app.util.GracePhotoUtil
+import com.grace.app.util.LogUtil
+import java.io.FileOutputStream
+import java.io.IOException
 
-import com.grace.app.GraceApplication;
-import com.grace.app.R;
-import com.grace.app.constants.Constants;
-import com.grace.app.util.GracePhotoUtil;
-import com.grace.app.util.LogUtil;
+object BlessPhotoWorker {
+    fun bless(context: Context, uri: String): String {
+        LogUtil.d(Constants.BLESS_TAG, "BlessPhotoWorker bless() | photo = $uri")
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
+        val bottomImage = GracePhotoUtil.getHandledBitmap(uri)
 
-/**
- * Background worker for blessing a photo without AsyncTask.
- */
-public final class BlessPhotoWorker {
-
-    private BlessPhotoWorker() {
-    }
-
-    public static String bless(String uri) {
-        LogUtil.d(Constants.BLESS_TAG, "BlessPhotoWorker bless() | photo = " + uri);
-
-        //get meal photo
-        Bitmap bottomImage = GracePhotoUtil.getHandledBitmap(uri);
-
-        //get and resize watermark
-        Bitmap _topImage = BitmapFactory.decodeResource(GraceApplication.getAppComponent().getApp().getResources(),
-                R.drawable.watermark_blessed_transparent);
-        int widthHeight;
-        if (GracePhotoUtil.getResizeType(bottomImage) == Constants.PORTRAIT_RESIZE) {
-            widthHeight = bottomImage.getWidth() / Constants.WATERMARK_DIMENSIONS_FACTOR;
-            LogUtil.d(Constants.BLESS_TAG, "BlessPhotoWorker bless() | " +
-                    "Constants.PORTRAIT_RESIZE dimensions = " + widthHeight);
-        } else {
-            widthHeight = bottomImage.getHeight() / Constants.WATERMARK_DIMENSIONS_FACTOR;
-            LogUtil.d(Constants.BLESS_TAG, "BlessPhotoWorker bless() | "
-                    + "Constants.LANDSCAPE_RESIZE dimensions = " + widthHeight);
-        }
-        Bitmap topImage = GracePhotoUtil.getResizedBitmap(_topImage, widthHeight, widthHeight);
-        _topImage.recycle();
-
-        //get output blessed photo
-        String blessedPhotoUri = "";
-        OutputStream blessedPhotoOutputStream = null;
-        try {
-            File file = GracePhotoUtil.getOutputMediaFile(Constants.GRACE_BLESSED_PHOTO);
-            if (file != null) {
-                blessedPhotoUri = file.getAbsolutePath();
-
-                blessedPhotoOutputStream = new FileOutputStream(blessedPhotoUri);
-                //magic happens - bless and create image
-                GracePhotoUtil.addBlessing(bottomImage, topImage, Constants.MARGIN_FACTOR) //bless photo
-                        .compress(Bitmap.CompressFormat.JPEG, 100, blessedPhotoOutputStream); //save as .jpeg image
+        val topImageSource = BitmapFactory.decodeResource(
+            context.resources,
+            R.drawable.watermark_blessed_transparent
+        )
+        val widthHeight =
+            if (GracePhotoUtil.getResizeType(bottomImage) == Constants.PORTRAIT_RESIZE) {
+                bottomImage.width / Constants.WATERMARK_DIMENSIONS_FACTOR
+            } else {
+                bottomImage.height / Constants.WATERMARK_DIMENSIONS_FACTOR
             }
+        val topImage = GracePhotoUtil.getResizedBitmap(topImageSource, widthHeight, widthHeight)
+        topImageSource.recycle()
 
-        } catch (IOException e) {
-            LogUtil.d(Constants.BLESS_TAG, "bless() | exception = " + e.getMessage());
-            blessedPhotoUri = "";
+        var blessedPhotoUri = ""
+        try {
+            val file = GracePhotoUtil.getOutputMediaFile(context, Constants.GRACE_BLESSED_PHOTO)
+            if (file != null) {
+                blessedPhotoUri = file.absolutePath
+                FileOutputStream(blessedPhotoUri).use { outputStream ->
+                    GracePhotoUtil.addBlessing(bottomImage, topImage, Constants.MARGIN_FACTOR)
+                        .compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
+                }
+            }
+        } catch (e: IOException) {
+            LogUtil.d(Constants.BLESS_TAG, "bless() | exception = ${e.message}")
+            blessedPhotoUri = ""
+        } finally {
+            bottomImage.recycle()
+            topImage.recycle()
         }
 
-        //recycle bitmaps
-        bottomImage.recycle();
-        topImage.recycle();
-
-        return blessedPhotoUri;
+        return blessedPhotoUri
     }
 }

@@ -35,6 +35,7 @@
     <string name="something_went_wrong_text">Hmm&#8230; Something went wrong</string>
     <string name="transition_name">photo</string>
     <string name="tap_for_full_text">Tap for full photo</string>
+    <string name="close_text">Close</string>
 
 
 </resources>
