@@ -1,0 +1,3 @@
+<resources>
+    <attr name="fontPath" format="string" />
+</resources>
