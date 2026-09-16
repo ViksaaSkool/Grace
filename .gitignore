@@ -8,3 +8,6 @@
 /captures
 .externalNativeBuild
 libs/
+/.idea/
+/.idea/shelf/fix_gradle/shelved.patch
+/.idea/shelf/fix_gradle.xml
